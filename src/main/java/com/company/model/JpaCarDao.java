@@ -23,7 +23,7 @@ public class JpaCarDao implements CarDao, AutoCloseable {
                 TableUtils.createTable(carDao);
                 carDao.create(new Car(2005, "Honda", "Civic", "Sedan"));
                 carDao.create(new Car(2014, "Porsche", "918 Spyder", "Roadster"));
-                carDao.create(new Car(2008, "Toyota", "Tundra", "Pickup truck"));
+                carDao.create(new Car(2008, "Toyota", "Tundra", "Pickup"));
             }
         } catch (SQLException throwables) {
             throw new DaoException(throwables);

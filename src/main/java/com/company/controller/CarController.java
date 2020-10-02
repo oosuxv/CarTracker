@@ -16,40 +16,23 @@ public class CarController {
         this.carView = carView;
     }
 
-    public boolean execute(String command) {
-        if (command.equals("list")) {
-            list();
-            return true;
+    public void execute(String command) {
+        switch (command) {
+            case "list":
+                list();
+                break;
+            case "exit":
+                System.exit(0);
+                break;
         }
-        if (command.equals("add")) {
-            parseAdd(command);
-            return true;
-        }
-        if (command.startsWith("remove")) {
-            parseAdd(command);
-            return true;
-        }
-        if (command.startsWith("update")) {
-            parseAdd(command);
-            return true;
-        }
-
-
-        return false;
-    }
-
-    private void parseAdd(String command) {
+        execute(carView.askForInput());
     }
 
     private void list() {
         try {
-            List<Car> carList = carDao.getAll();
-            carView.printMessage("list");
-            for (Car car : carList) {
-                carView.printMessage("car", car.getMaker(), car.getModel(), car.getBodyStyle(), String.valueOf(car.getYear()));
-            }
+            carView.printList(carDao.getAll());
         } catch (DaoException e) {
-            e.printStackTrace();
+            carView.printMessage("error");
         }
     }
 }
