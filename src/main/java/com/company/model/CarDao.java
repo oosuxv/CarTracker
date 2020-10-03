@@ -13,5 +13,5 @@ public interface CarDao {
 
     void update(Car car) throws DaoException;
 
-    void delete(Car car) throws DaoException;
+    void delete(long id) throws DaoException;
 }

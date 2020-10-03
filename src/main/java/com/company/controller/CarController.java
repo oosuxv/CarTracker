@@ -27,7 +27,16 @@ public class CarController {
         } else if (command.equals("help")) {
             carView.showHelp();
             return true;
+        } else if (command.equals("add")) {
+            carView.showHelp();
+            return true;
         } else if (command.startsWith("details") && commandParts.length == 2) {
+            details(commandParts[1]);
+            return true;
+        } else if (command.startsWith("remove") && commandParts.length == 2) {
+            delete(commandParts[1]);
+            return true;
+        } else if (command.startsWith("update") && commandParts.length == 2) {
             details(commandParts[1]);
             return true;
         } else {
@@ -40,7 +49,7 @@ public class CarController {
         try {
             carView.showList(carDao.getAll());
         } catch (DaoException e) {
-            carView.showError(false);
+            carView.showError();
         }
     }
 
@@ -54,7 +63,18 @@ public class CarController {
                 carView.showWrongId();
             }
         } catch (DaoException e) {
-            carView.showError(false);
+            carView.showError();
+        } catch (NumberFormatException e) {
+            carView.showWrongCommand();
+        }
+    }
+
+    private void delete(String idString) {
+        try {
+            long id = Long.parseLong(idString);
+            carDao.delete(id);
+        } catch (DaoException e) {
+            carView.showError();
         } catch (NumberFormatException e) {
             carView.showWrongCommand();
         }

@@ -11,6 +11,11 @@ import java.util.Scanner;
 public class CarView {
     private Locale currentLocale = Locale.getDefault();
     private ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
+    private Scanner scanner;
+
+    public CarView(Scanner scanner) {
+        this.scanner = scanner;
+    }
 
     public Locale getLocale() {
         return currentLocale;
@@ -23,9 +28,7 @@ public class CarView {
 
     public String askForInput() {
         System.out.print(messages.getString("prompt"));
-        try (Scanner scanner = new Scanner(System.in)) {
-            return scanner.nextLine();
-        }
+        return scanner.nextLine();
     }
 
     public void showList(List<Car> list) {
@@ -58,12 +61,8 @@ public class CarView {
         System.out.println(messages.getString("help"));
     }
 
-    public void showError(boolean fatal) {
-        if (fatal) {
-            System.out.println(messages.getString("fatalError"));
-        } else {
-            System.out.println(messages.getString("error"));
-        }
+    public void showError() {
+        System.out.println(messages.getString("error"));
     }
 
     public void showWrongCommand() {
@@ -72,6 +71,7 @@ public class CarView {
     }
 
     public void showWrongId() {
-        System.out.println(messages.getString("wrongId4"));
+        System.out.println(messages.getString("wrongId"));
     }
+
 }
