@@ -43,6 +43,18 @@ public class CarView {
                     car.getMaker(), car.getModel(), car.getBodyStyle(), car.getYear());
             System.out.println();
         }
+    }
+    
+    public void printHelp() {
+        System.out.println(messages.getString("help"));
+    }
+
+    public void printError() {
+        System.out.println(messages.getString("error"));
+    }
+
+    public void printUnknownCommand() {
+        System.out.println(messages.getString("unknownCommand"));
         System.out.println(messages.getString("help"));
     }
 }

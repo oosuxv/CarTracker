@@ -16,16 +16,18 @@ public class CarController {
         this.carView = carView;
     }
 
-    public void execute(String command) {
+    public boolean execute() {
+        String command = carView.askForInput();
         switch (command) {
-            case "list":
-                list();
-                break;
             case "exit":
                 System.exit(0);
-                break;
+                return false;
+            case "list":
+                list();
+                return true;
+            default:
+                return true;
         }
-        execute(carView.askForInput());
     }
 
     private void list() {
