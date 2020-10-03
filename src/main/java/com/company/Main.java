@@ -1,22 +1,23 @@
 package com.company;
 
 import com.company.controller.CarController;
-import com.company.model.Car;
 import com.company.model.DaoException;
 import com.company.model.JpaCarDao;
 import com.company.view.CarView;
 
-import java.util.Optional;
-
 public class Main {
 
     public static void main(String[] args)  {
+        CarView view = null;
         try (JpaCarDao jcd = new JpaCarDao("jdbc:h2:./cars");) {
-            CarView view = new CarView();
+            view = new CarView();
             CarController controller = new CarController(jcd, view);
-            controller.execute("list");
+            view.showHelp();
+            while (controller.execute()) {};
         } catch (DaoException e) {
-            e.printStackTrace();
+            if (view != null) {
+                view.showError(true);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.company.view;
 
+import com.company.controller.CarController;
 import com.company.model.Car;
 
 import java.util.List;
@@ -20,41 +21,57 @@ public class CarView {
         messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
     }
 
-    public String askForInput(String messageKey) {
-        System.out.println(messages.getString(messageKey));
-        return askForInput();
-    }
-
     public String askForInput() {
+        System.out.print(messages.getString("prompt"));
         try (Scanner scanner = new Scanner(System.in)) {
             return scanner.nextLine();
         }
     }
 
-    public void printMessage(String messageKey, String... values ) {
-        System.out.printf(messages.getString(messageKey), values);
-        System.out.println();
-    }
-
-    public void printList(List<Car> list) {
+    public void showList(List<Car> list) {
+        String layout = "%5s|%15s|%15s\n";
         System.out.println(messages.getString("list"));
+        System.out.printf(layout
+                , messages.getString("id")
+                , messages.getString("maker")
+                , messages.getString("model")
+        );
         for (Car car : list) {
-            System.out.printf(messages.getString("car"),
-                    car.getMaker(), car.getModel(), car.getBodyStyle(), car.getYear());
-            System.out.println();
+            System.out.printf(layout
+                    , car.getCarId()
+                    , car.getMaker()
+                    , car.getModel()
+            );
         }
     }
-    
-    public void printHelp() {
+
+    public void showDetails(Car car) {
+        System.out.println(messages.getString("details"));
+        System.out.printf("%s: %d\n", messages.getString("id"), car.getCarId());
+        System.out.printf("%s: %s\n", messages.getString("maker"), car.getMaker());
+        System.out.printf("%s: %s\n", messages.getString("model"), car.getModel());
+        System.out.printf("%s: %s\n", messages.getString("bodyStyle"), car.getBodyStyle());
+        System.out.printf("%s: %s\n", messages.getString("year"), car.getYear());
+    }
+
+    public void showHelp() {
         System.out.println(messages.getString("help"));
     }
 
-    public void printError() {
-        System.out.println(messages.getString("error"));
+    public void showError(boolean fatal) {
+        if (fatal) {
+            System.out.println(messages.getString("fatalError"));
+        } else {
+            System.out.println(messages.getString("error"));
+        }
     }
 
-    public void printUnknownCommand() {
-        System.out.println(messages.getString("unknownCommand"));
+    public void showWrongCommand() {
+        System.out.println(messages.getString("wrongCommand"));
         System.out.println(messages.getString("help"));
+    }
+
+    public void showWrongId() {
+        System.out.println(messages.getString("wrongId4"));
     }
 }
