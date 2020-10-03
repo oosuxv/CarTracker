@@ -1,6 +1,5 @@
 package com.company.view;
 
-import com.company.controller.CarController;
 import com.company.model.Car;
 
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.Scanner;
 public class CarView {
     private Locale currentLocale = Locale.getDefault();
     private ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public CarView(Scanner scanner) {
         this.scanner = scanner;
@@ -28,6 +27,15 @@ public class CarView {
 
     public String askForInput() {
         System.out.print(messages.getString("prompt"));
+        return scanner.nextLine();
+    }
+
+    public String askForField(String field, String type) {
+        System.out.printf("%s %s(%s): "
+                , messages.getString("fieldPrompt")
+                , messages.getString(field)
+                , messages.getString(type)
+        );
         return scanner.nextLine();
     }
 
@@ -73,5 +81,7 @@ public class CarView {
     public void showWrongId() {
         System.out.println(messages.getString("wrongId"));
     }
+
+
 
 }

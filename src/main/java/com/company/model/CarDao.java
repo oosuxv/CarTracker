@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface CarDao {
 
-    Optional<Car> get(long id) throws DaoException;
+    Optional<Car> get(int id) throws DaoException;
 
     List<Car> getAll() throws DaoException;
 
@@ -13,5 +13,5 @@ public interface CarDao {
 
     void update(Car car) throws DaoException;
 
-    void delete(long id) throws DaoException;
+    void delete(int id) throws DaoException;
 }

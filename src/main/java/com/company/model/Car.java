@@ -8,7 +8,7 @@ public class Car {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long carId;
+    private int carId;
 
     @Column
     private int year;
@@ -32,7 +32,7 @@ public class Car {
         this.bodyStyle = bodyStyle;
     }
 
-    public long getCarId() {
+    public int getCarId() {
         return carId;
     }
 

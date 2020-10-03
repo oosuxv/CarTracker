@@ -3,7 +3,6 @@ package com.company.model;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
-import com.j256.ormlite.table.TableInfo;
 import com.j256.ormlite.table.TableUtils;
 
 import java.io.IOException;
@@ -13,7 +12,7 @@ import java.util.Optional;
 
 public class JpaCarDao implements CarDao, AutoCloseable {
     private JdbcPooledConnectionSource connectionSource;
-    private Dao<Car, Long> carDao;
+    private Dao<Car, Integer> carDao;
 
     public JpaCarDao(String jdbcUrl) throws DaoException {
         try {
@@ -30,7 +29,7 @@ public class JpaCarDao implements CarDao, AutoCloseable {
         }
     }
 
-    public Optional<Car> get(long id) throws DaoException {
+    public Optional<Car> get(int id) throws DaoException {
         try {
             return Optional.ofNullable(carDao.queryForId(id));
         }  catch (SQLException throwables) {
@@ -62,7 +61,7 @@ public class JpaCarDao implements CarDao, AutoCloseable {
         }
     }
 
-    public void delete(long id) throws DaoException {
+    public void delete(int id) throws DaoException {
         try {
             carDao.deleteById(id);
         } catch (SQLException throwables) {
