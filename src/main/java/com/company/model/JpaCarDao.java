@@ -61,9 +61,9 @@ public class JpaCarDao implements CarDao, AutoCloseable {
         }
     }
 
-    public void delete(int id) throws DaoException {
+    public void delete(Car car) throws DaoException {
         try {
-            carDao.deleteById(id);
+            carDao.delete(car);
         } catch (SQLException throwables) {
             throw new DaoException(throwables);
         }
