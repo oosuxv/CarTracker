@@ -5,7 +5,6 @@ import com.company.model.DaoException;
 import com.company.model.JpaCarDao;
 import com.company.view.CarConsoleView;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
@@ -26,10 +25,10 @@ public class Main {
             System.out.println("properties are missing. please contact support.");
             return;
         }
+
         CarConsoleView view = null;
         try (Scanner scanner = new Scanner(System.in);
              JpaCarDao jcd = new JpaCarDao(appProps.getProperty("jdbcurl"))) {
-
             view = new CarConsoleView(scanner);
             CarController controller = new CarController(jcd, view);
             controller.start();

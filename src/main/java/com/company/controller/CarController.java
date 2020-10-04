@@ -3,9 +3,8 @@ package com.company.controller;
 import com.company.model.Car;
 import com.company.model.CarDao;
 import com.company.model.DaoException;
-import com.company.view.CarConsoleView;
-
 import com.company.view.CarView;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -24,119 +23,65 @@ public class CarController {
 
     public void start() {
         carView.showHelp();
-        while (execute()) {}
+        while (execute()) {
+        }
     }
 
     public boolean execute() {
         String command = carView.askForInput();
-        String[] commandParts = command.split(" ");
-        if (command.equals("exit")) {
-            return false;
-        } else if (command.equals("list")) {
-            list();
-            return true;
-        } else if (command.equals("help")) {
-            carView.showHelp();
-            return true;
-        } else if (command.equals("add")) {
-            add();
-            return true;
-        } else if (command.startsWith("details") && commandParts.length == 2) {
-            showDetails(commandParts[1]);
-            return true;
-        } else if (command.startsWith("remove") && commandParts.length == 2) {
-            delete(commandParts[1]);
-            return true;
-        } else if (command.startsWith("update") && commandParts.length == 2) {
-            update(commandParts[1]);
-            return true;
-        } else if (command.startsWith("locale") && commandParts.length == 3) {
-            changeLocale(commandParts[1], commandParts[2]);
-            return true;
-        } else {
-            carView.showWrongCommand();
-            return true;
-        }
-    }
-
-    private void list() {
         try {
-            carView.showList(carDao.getAll());
-        } catch (DaoException e) {
-            logger.error("Error while showing list", e);
-            carView.showError();
-        }
-    }
-
-    private void showDetails(String idString) {
-        try {
-            int id = Integer.parseInt(idString);
-            Optional<Car> car = carDao.get(id);
-            if (car.isPresent()) {
-                carView.showDetails(car.get());
-            } else {
-                carView.showWrongId();
+            switch (command) {
+                case "exit":
+                    return false;
+                case "list":
+                    list();
+                    return true;
+                case "help":
+                    carView.showHelp();
+                    return true;
+                case "add":
+                    add();
+                    return true;
+                case "details":
+                    showDetails();
+                    return true;
+                case "remove":
+                    delete();
+                    return true;
+                case "update":
+                    update();
+                    return true;
+                case "locale":
+                    changeLocale();
+                    return true;
+                default:
+                    carView.showWrongCommand();
+                    return true;
             }
         } catch (DaoException e) {
-            logger.error("Error while showing details", e);
+            logger.error("data access error on command " + command, e);
             carView.showError();
-        } catch (NumberFormatException e) {
-            logger.error("Expected number parsing failure");
-            carView.showWrongCommand();
+            return true;
+        } catch (Exception e) {
+            logger.error("something went in totally wrong direction, but this program is supposed to be resilient", e);
+            carView.showError();
+            return true;
         }
     }
 
-    private void delete(String idString) {
-        try {
-            int id = Integer.parseInt(idString);
-            Optional<Car> optionalCar = carDao.get(id);
-            if (optionalCar.isPresent()) {
-                Car car = optionalCar.get();
-                carDao.delete(car);
-                carView.showSuccess();
-            } else {
+    private int getIntFromView(String field) {
+        boolean parseFailed = true;
+        int result = 0;
+        do {
+            try {
+                result = Integer.parseInt(carView.askForField(field, "int"));
+                parseFailed = false;
+            } catch (NumberFormatException e) {
+                logger.error("Expected number parsing failure");
                 carView.showWrongId();
             }
-        } catch (DaoException e) {
-            logger.error("Error while deleting", e);
-            carView.showError();
-        } catch (NumberFormatException e) {
-            logger.error("Expected number parsing failure");
-            carView.showWrongCommand();
-        }
-    }
-
-    private void update(String idString) {
-        try {
-            int id = Integer.parseInt(idString);
-            Optional<Car> optionalCar = carDao.get(id);
-            if (optionalCar.isPresent()) {
-                Car car = optionalCar.get();
-                setCarFields(car);
-                carDao.update(car);
-                carView.showSuccess();
-            } else {
-                carView.showWrongId();
-            }
-        } catch (DaoException e) {
-            logger.error("Error while updating", e);
-            carView.showError();
-        } catch (NumberFormatException e) {
-            logger.error("Expected number parsing failure");
-            carView.showWrongCommand();
-        }
-    }
-
-    private void add() {
-        Car car = new Car();
-        setCarFields(car);
-        try {
-            carDao.save(car);
-            carView.showSuccess();
-        } catch (DaoException e) {
-            logger.error("Error while adding", e);
-            carView.showError();
-        }
+        } while (parseFailed);
+        return result;
     }
 
     private void setCarFields(Car car) {
@@ -152,23 +97,65 @@ public class CarController {
         if (input.length() > 0) {
             car.setBodyStyle(input);
         }
-        boolean parseFailed = true;
         input = carView.askForField("year", "int");
         if (input.length() > 0) {
-            do {
-                try {
-                    car.setYear(Integer.parseInt(carView.askForField("year", "int")));
-                    parseFailed = false;
-                } catch (NumberFormatException e) {
-                    logger.error("Expected number parsing failure");
-                }
-            } while (parseFailed);
+            try {
+                car.setYear(Integer.parseInt(input));
+            } catch (NumberFormatException e) {
+                logger.error("Expected number parsing failure");
+                car.setYear(getIntFromView("year"));
+            }
         }
     }
 
-    private void changeLocale(String language, String country) {
-        Locale locale = new Locale(language, country);
-        carView.setLocale(locale);
+    private void list() throws DaoException {
+        carView.showList(carDao.getAll());
+    }
+
+    private void showDetails() throws DaoException {
+        int id = getIntFromView("id");
+        Optional<Car> car = carDao.get(id);
+        if (!car.isPresent()) {
+            carView.showNotFound();
+            return;
+        }
+        carView.showDetails(car.get());
+    }
+
+    private void delete() throws DaoException {
+        int id = getIntFromView("id");
+        Optional<Car> car = carDao.get(id);
+        if (!car.isPresent()) {
+            carView.showNotFound();
+            return;
+        }
+        carDao.delete(car.get());
+        carView.showSuccess();
+    }
+
+
+    private void update() throws DaoException {
+        int id = getIntFromView("id");
+        Optional<Car> optionalCar = carDao.get(id);
+        if (!optionalCar.isPresent()) {
+            carView.showNotFound();
+            return;
+        }
+        Car car = optionalCar.get();
+        setCarFields(car);
+        carDao.update(car);
+        carView.showSuccess();
+    }
+
+    private void add() throws DaoException {
+        Car car = new Car();
+        setCarFields(car);
+        carDao.save(car);
+        carView.showSuccess();
+    }
+
+    private void changeLocale() {
+        carView.setLocale(new Locale("ru", "RU"));
     }
 }
 

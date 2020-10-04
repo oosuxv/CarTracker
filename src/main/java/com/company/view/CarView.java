@@ -24,5 +24,7 @@ public interface CarView {
 
     void showWrongId();
 
+    void showNotFound();
+
     void showSuccess();
 }

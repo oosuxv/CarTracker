@@ -8,8 +8,7 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class CarConsoleView implements CarView {
-    private static final String commands = "list, add, details #id, remove #id, update #id, help, exit";
-    private static final String example = "update 3";
+    private static final String commands = "list, add, details, remove, update, help, exit";
 
     private Locale currentLocale = Locale.getDefault();
     private ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
@@ -72,11 +71,9 @@ public class CarConsoleView implements CarView {
 
     @Override
     public void showHelp() {
-        System.out.printf("%s: %s. %s: %s\n"
+        System.out.printf("%s: %s.\n"
                 , messages.getString("help")
-                , commands
-                , messages.getString("forExample")
-                , example);
+                , commands);
     }
 
     @Override
@@ -93,6 +90,11 @@ public class CarConsoleView implements CarView {
     @Override
     public void showWrongId() {
         System.out.println(messages.getString("wrongId"));
+    }
+
+    @Override
+    public void showNotFound() {
+        System.out.println(messages.getString("carNotFound"));
     }
 
     @Override

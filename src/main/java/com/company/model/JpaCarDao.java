@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class JpaCarDao implements CarDao, AutoCloseable {
-    private JdbcPooledConnectionSource connectionSource;
-    private Dao<Car, Integer> carDao;
+    private final JdbcPooledConnectionSource connectionSource;
+    private final Dao<Car, Integer> carDao;
 
     public JpaCarDao(String jdbcUrl) throws DaoException {
         try {
